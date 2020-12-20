@@ -22,10 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileSystemView;
-
-import com.sun.org.apache.bcel.internal.Const;
-import com.sun.org.apache.bcel.internal.generic.LoadInstruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +31,10 @@ import javax.swing.JScrollBar;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 public class ViewBase {
-	private static JPanel createPanel;
-	public List<String> dataTag = new ArrayList<String>();
+	private Color setPanelColor;
+	private Color buttonColor;
 	
-	Color setPanelColor;
-	Color buttonColor;
-	Font viewFont = new Font("SansSerif", Font.LAYOUT_LEFT_TO_RIGHT, 20);
+	private Font viewFont = new Font("SansSerif", Font.LAYOUT_LEFT_TO_RIGHT, 20);
 	
 	public static String userInputString;
     static int sanChungKhoanHienTai;
@@ -70,7 +64,6 @@ public class ViewBase {
 		
 		JButton chooseButton = new JButton("Chon Tag");
 		JButton caculateButton = new JButton("Xu ly");
-		JButton hotTagButton = new JButton("Xu ly hot tag");
 		
 		JLabel lb = new JLabel();
 		
@@ -85,10 +78,12 @@ public class ViewBase {
 		getInput.setFont(viewFont);
 		JLabel resultLabel = new JLabel("Result ");
 		resultLabel.setFont(viewFont);
-		JLabel sanChungKhoanLabel = new JLabel("Chon san: ");
+		JLabel sanChungKhoanLabel = new JLabel("Chọn sàn: ");
 		sanChungKhoanLabel.setFont(viewFont);
+		JLabel hotTagLabel = new JLabel("HOT: ");
+		hotTagLabel.setFont(viewFont);
 		
-		JLabel nameProject = new JLabel("NAME PROJECT");
+		JLabel nameProject = new JLabel("TEAM CHỨNG KHOÁN");
 		nameProject.setForeground(Color.black);
 		
 		JComboBox listMenuBox = new JComboBox(new String[] { "Tag 1", "Tag 2", "Tag 3" });		
@@ -97,6 +92,14 @@ public class ViewBase {
 		inputTextField.setFont(viewFont);
 		
 		listMenuBox.setBounds(80, 500, 300, 30);
+		listMenuBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inputTextField.setText(listMenuBox.getSelectedItem().toString());
+				
+			}
+		});
 		panel.add(listMenuBox);
 		sanChungKhoan.setBounds(380, 170, 300, 27);		
 		
@@ -105,10 +108,7 @@ public class ViewBase {
 		
 		caculateButton.setBounds(550, 100, 100, 30);
 		caculateButton.setBackground(buttonColor);
-		
-		hotTagButton.setBounds(400, 500, 120, 30);
-		hotTagButton.setBackground(buttonColor);
-		
+				
 		getInput.setBounds(10, 79, 150, 70);
 		getInput.setForeground(Color.black);
 		
@@ -119,13 +119,14 @@ public class ViewBase {
 		sanChungKhoanLabel.setForeground(Color.black);
 		
 		nameProject.setFont(new Font("SansSerif",Font.BOLD , 40));
-		nameProject.setBounds(500, 0, 400, 80);
+		nameProject.setBounds(460, 0, 480, 80);
 
 		panel.add(sanChungKhoan);
 		panel.setLayout(null);
 		panel.setBackground(setPanelColor);
 
 		lb.setBounds(900, 100, 500, 400);
+		hotTagLabel.setBounds(15,505,60,20);
 				
 		lb.setIcon(new ImageIcon("workshop.png"));
 		caculateButton.setIcon(new ImageIcon("search.png"));
@@ -137,14 +138,13 @@ public class ViewBase {
 		panel.add(chooseButton);
 		panel.add(caculateButton);
 		panel.add(sanChungKhoanLabel);
-		panel.add(hotTagButton);
 		panel.add(lb);
 		panel.add(nameProject);
         panel.add(scrollPane);
+        panel.add(hotTagLabel);
         
 		SetAction(chooseButton, 1);
 		SetAction(caculateButton, 2);
-		SetAction(hotTagButton, 3);
 	}
 	
 
@@ -167,14 +167,14 @@ public class ViewBase {
 			public void actionPerformed(ActionEvent event) {
 				SetViewWindow(ID);
 				if (ID == 2)
-				{ 
+				{   
 					userInputString =ViewBase.inputTextField.getText();
 					
 					//Sàn chứng khoán được chọn sẽ được kiểm tra index của nó trong ComboBox. Lưu lại vào biến sanChungKhoanHienTai
 					//Quy theo ID: 0-Sàn Hà Nội, ID:1-Sàn HCM
 					sanChungKhoanHienTai = sanChungKhoan.getSelectedIndex();
-					System.out.println(userInputString);
-					System.out.println(sanChungKhoanHienTai);
+					Controller.request();
+					
 				}
 			}
 		});
@@ -188,14 +188,10 @@ public class ViewBase {
 		else if(ID==2){
 			SendRequest(userInputString,sanChungKhoanHienTai);
 		}
-		else if(ID==3) {
-		}
-
 	}
 	//# Ham hien thi giao dien App
 	public void ShowFrame()
-	{
-
+	{ 	 JPanel createPanel = new JPanel();
 		 ViewBase viewBase = new ViewBase(); 
 		 viewBase.CreateMainFrame(1280, 680, "PROJECT OOP", createPanel);
 	}
@@ -206,11 +202,11 @@ public class ViewBase {
 	private static void SendRequest(String data,int chonSanChungKhoan) {	
 		if(chonSanChungKhoan==0)
 		{
-		//	SAN_HA_NOI.find(data);
+		//TODO: Gọi method Find của Sàn Hà Nội
 		}
 		else if(chonSanChungKhoan==1)
 		{
-		//	SAN_HO_CHI_MINH.find(data);
+		//TODO: Gọi method Find của Sàn Hồ Chí Minh
 		}
 	}
 	
